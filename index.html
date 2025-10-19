@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GUIA 7 ARBOLES BINARIOS</title>
+  <style>
+    :root{--bg:#f6f8fb;--card:#ffffff;--accent:#0b6e4f;--muted:#6b7280;--ok:#1f9d4a}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:var(--bg); color:#111827; margin:0; padding:24px}
+    .container{max-width:1000px;margin:0 auto}
+    header{background:linear-gradient(90deg,#0b6e4f22,#0b6e4f11);padding:20px;border-radius:12px}
+    h1{margin:0;font-size:28px;color:var(--accent)}
+    .meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+    .meta div{background:var(--card);padding:10px 12px;border-radius:8px;box-shadow:0 1px 2px rgba(0,0,0,0.04)}
+    section.card{background:var(--card);padding:18px;border-radius:12px;margin-top:16px;box-shadow:0 6px 18px rgba(12,18,36,0.06)}
+    h2{margin-top:0;color:#0f172a}
+    table{width:100%;border-collapse:collapse;margin-top:8px}
+    th,td{border:1px solid #e6e9ef;padding:10px;text-align:left;font-size:14px}
+    th{background:#f3f6fb}
+    .correct{background:linear-gradient(90deg,#ecfdf5,#ffffff);border-left:4px solid var(--ok);padding:8px;border-radius:6px}
+    .answer{padding:6px 8px;border-radius:6px;margin:6px 0}
+    .answer.correct{background:#ecfdf5;border-left:4px solid var(--ok)}
+    .answers-list{margin-top:8px}
+    .small{font-size:13px;color:var(--muted)}
+    .presaberes .option{display:block;padding:8px;border-radius:6px;margin:6px 0;background:#fbfdff;border:1px solid #eef2ff}
+    footer{margin-top:20px;font-size:13px;color:var(--muted);text-align:center}
+    pre.activity{white-space:pre-wrap;background:#0b1220;color:#fff;padding:12px;border-radius:8px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>GUIA 7 ARBOLES BINARIOS</h1>
+      <div class="meta" aria-hidden="false">
+        <div><strong>Institución:</strong> UNIVERSIDAD MANUELA BELTRAN</div>
+        <div><strong>Materia:</strong> ESTRUCTURA DE DATOS</div>
+        <div><strong>Profesora:</strong> OLGA LUCIA ROA</div>
+        <div><strong>Autores:</strong> CRISTIAN SAMUEL CATOLICO QUIÑONEZ y LEONARDO PEÑUELA</div>
+      </div>
+    </header>
+
+    <section class="card">
+      <h2>Consulta: Árboles B, B+ y AVL — Cuadro comparativo</h2>
+      <table>
+        <thead>
+          <tr><th>Característica</th><th>Árbol B</th><th>Árbol B+</th><th>Árbol AVL</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Propósito principal</td><td>Indexación eficiente en sistemas de almacenamiento secundario (disco)</td><td>Optimización para búsquedas en disco con todos los registros en hojas (mejor escaneo secuencial)</td><td>Mantener altura balanceada en memoria para operaciones en RAM</td></tr>
+          <tr><td>Estructura de nodos</td><td>Nodos internos y hojas contienen claves y punteros a registros</td><td>Nodos internos contienen solo claves y punteros a hijos; hojas contienen claves y punteros a registros y están enlazadas</td><td>Nodos con clave única por nodo, cada nodo tiene punteros a hijos; no hay enlace entre hojas</td></tr>
+          <tr><td>Balance</td><td>Balanceado, todas las hojas a la misma profundidad</td><td>Balanceado, todas las hojas a la misma profundidad</td><td>Balanceado con factor de equilibrio -1,0,1 en cada nodo (rotaciones para mantenerlo)</td></tr>
+          <tr><td>Altura</td><td>Menor altura para grandes cantidades de datos en disco</td><td>Similar a B pero hojas enlazadas facilitan escaneo</td><td>Altura próxima a log₂(n), óptimo para operaciones en memoria</td></tr>
+          <tr><td>Uso típico</td><td>Sistemas de gestión de bases de datos y sistemas de archivos</td><td>Bases de datos y sistemas que requieren rangos y escaneo eficiente</td><td>Estructuras en memoria para búsquedas rápidas, inserción y borrado (ej. índices en memoria)</td></tr>
+          <tr><td>Inserciones/Borrados</td><td>Divisiones y fusiones de nodos; eficientes en disco</td><td>Similar a B, pero manejo de hojas y enlaces extra</td><td>Rotaciones (simples/dobles) para mantener balance; más operaciones en memoria</td></tr>
+          <tr><td>Ventajas</td><td>Optimizado para I/O en disco; reduce altura</td><td>Rápido escaneo de rango; hojas enlazadas facilitan recorridos</td><td>Búsqueda, inserción y eliminación garantizadas en O(log n) con baja constante</td></tr>
+          <tr><td>Desventajas</td><td>Más complejo que árboles binarios; manejo en memoria no ideal</td><td>Mayor complejidad estructural y almacenamiento extra por enlaces</td><td>Más rotaciones en inserciones/borrados; no ideal para almacenamiento en disco masivo</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Árbol de códigos Huffman — Aplicación y funcionamiento</h2>
+      <p class="small">(Explicación breve / ~ media página)</p>
+      <p>
+        El árbol de códigos Huffman es una estructura usada en compresión de datos sin pérdida que genera códigos prefijos de longitud variable según la frecuencia de símbolos. En la práctica se aplica en formatos de compresión como ZIP, JPEG y en algoritmos de compresión de texto y multimedia donde es necesario reducir el número promedio de bits por símbolo.
+      </p>
+      <p>
+        Funcionamiento: Primero se cuentan las frecuencias de cada símbolo del mensaje. Se crean nodos hoja para cada símbolo con su frecuencia y se inserta todo en una cola de prioridad (min-heap). Se extraen los dos nodos de menor frecuencia y se combinan en un nuevo nodo padre cuya frecuencia es la suma; ese padre se vuelve a insertar en la cola. El proceso se repite hasta que quede un único nodo raíz —el árbol de Huffman. Los códigos se asignan recorriendo el árbol: asignando '0' a una rama y '1' a la otra (o viceversa). Los símbolos más frecuentes quedan cerca de la raíz y reciben códigos más cortos, mientras que los raros quedan más profundos y tienen códigos más largos. Por ser prefijos (ningún código es prefijo de otro), la decodificación es unívoca leyendo bits y descendiendo por el árbol hasta encontrar una hoja.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>Aprendizajes obtenidos al realizar esta guía</h2>
+      <ol>
+        <li><strong>Comprensión de estructuras de datos arbóreas:</strong> Aprendimos cómo se representan y manipulan árboles binarios (inserción, recorrido, eliminación). <em>Relación profesional:</em> fundamental para implementar estructuras de datos eficientes en sistemas y en entrevistas técnicas.</li>
+        <li><strong>Implementación práctica de algoritmos:</strong> Al codificar las operaciones del árbol reforzamos la lógica de punteros y manejo de memoria/objetos. <em>Relación profesional:</em> esto es útil al desarrollar software que manipula estructuras dinámicas (motores de búsqueda, compiladores).</li>
+        <li><strong>Trabajo en equipo y resolución de problemas nuevos:</strong> Enfrentarnos a un tema nuevo nos exigió investigar, dividir tareas y aplicar debugging sistemático. <em>Relación profesional:</em> habilidades transferibles a proyectos reales donde se requiere aprendizaje rápido y colaboración.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>Reflexión — Dificultades y estrategias de solución</h2>
+      <p>
+        La guía trató sobre <strong>árboles binarios</strong> y la actividad práctica principal fue la implementación de códigos y funciones que permitieran <em>añadir</em> y <em>modificar</em> elementos en los árboles. Además incluía conceptos fundamentales, materiales teóricos y un video explicativo. La parte más complicada fue la realización de esos códigos porque el tema era nuevo y <strong>nunca antes lo habíamos tratado</strong>. Las dificultades concretas incluyeron: entender el manejo de punteros/referencias, gestionar casos de inserción/borreado en nodos con uno o dos hijos, y depurar recorridos (inorden, preorden, postorden).
+      </p>
+      <p>
+        <strong>Estrategias de solución empleadas:</strong>
+        <ul>
+          <li>Dividir el problema en sub-problemas más pequeños (por ejemplo: primero implementar inserción, luego recorridos, después modificación).</li>
+          <li>Escribir casos de prueba básicos y usar impresiones/interrupciones (print/debug) para seguir la estructura del árbol paso a paso.</li>
+          <li>Consultar fuentes externas (documentación, videos) y comparar implementaciones para entender patrones de diseño.</li>
+          <li>Pair programming: trabajar con el compañero para revisar líneas de código y detectar errores lógicos.</li>
+        </ul>
+      </p>
+    </section>
+
+    <section class="card presaberes">
+      <h2>PRESABERES REQUERIDOS</h2>
+
+      <div>
+        <h3>1. Teniendo en cuenta la terminología que se utiliza en teoría de grafos. Identifique la definición correcta de un grafo:</h3>
+        <div class="option">a. Un diagrama compuesto de nodos y conexiones</div>
+        <div class="option correct">b. <strong>Un conjunto de vértices y aristas, tal que cada arista está asociada a un par</strong></div>
+        <div class="option">c. Múltiples nodos denominados vértices y caminos denominados arcos.</div>
+        <div class="option">d. Un dibujo matemático que se emplea para modelar problemas de la vida real.</div>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>2. A partir de los conocimientos adquiridos en la guía. Elija la opción que mejor defina a un árbol binario.</h3>
+        <div class="option correct">a. <strong>Un árbol binario es un árbol con raíz en el que cada vértice tiene ningún hijo, un hijo o dos hijos.</strong></div>
+        <div class="option">b. Un conjunto finito de vértices todos conectados.</div>
+        <div class="option">c. Dos subconjuntos de vértices que se interconectan a través de aristas externas e incidentes solo en estos conjuntos.</div>
+        <div class="option">d. Un conjunto infinito de vértices todos conectados.</div>
+      </div>
+
+      <div style="margin-top:12px">
+        <h3>3. En los recorridos que se hace a un árbol, este método se recorre cada uno de los subárboles luego se pasa por la raíz. ¿Cuál es?</h3>
+        <div class="option">a. Pre-Orden</div>
+        <div class="option correct">b. <strong>Post-Orden</strong></div>
+        <div class="option">c. In-Orden</div>
+      </div>
+
+    </section>
+
+    <section class="card">
+      <h2>ACTIVIDAD DE TRABAJO AUTONOMO</h2>
+      <pre class="activity">Summary of Developer Mistakes
+The YouTube video, titled "5 errores que he cometido en mi carrera como desarrollador" (5 mistakes I've made in my career as a developer) by the channel HolaMundo, outlines five significant professional mistakes the creator made, offering critical lessons for those in software development.
+
+1. Not Using Version Control
+The first major mistake was working without a Version Control System (VCS) [01:12]. In a previous job, deploying code changes was a manual, error-prone process: changes were compiled into a compressed folder, which was then sent to the server. The developer had to manually remember and detail every change, which the server then applied to the various project files [01:41]. This method was inefficient and risky. The speaker now considers starting a new project without version control, even a solo one, to be unthinkable [01:55].
+
+2. Modeling NoSQL Databases Like SQL
+The second error involved approaching NoSQL database modeling with a relational (SQL) mindset [02:07]. The speaker initially focused on avoiding data duplication (like the third normal form in SQL) by only storing foreign keys (IDs) [02:54]. However, NoSQL databases should generally be modeled based on the application's read views. The correct NoSQL approach, in this case, would have been to embed necessary user data (like name and image) directly within the related post document to facilitate faster reads [02:19]. Modeling it like SQL forced the team to manually fetch and join data on the client side since NoSQL lacks native JOIN operations [03:48], resulting in high write costs and defeating the purpose of using a NoSQL structure.
+
+3. Insufficient Planning
+The third recurring mistake, particularly prevalent in startup environments, was the failure to plan the software adequately before development [04:07]. Often, the team would immediately start developing based on a quick conversation with a client and a simple note on a card. This lack of structure meant they did not fully understand the problem they were trying to solve, causing the development process to become a repetitive cycle (iterative process) of corrections [04:34]. Furthermore, not documenting test cases made it extremely difficult for developers, especially those with less experience, to know which scenarios to test [04:41].
+
+4. Not Having a QA Specialist
+The fourth error, common due to budget limitations in startups, was not hiring a dedicated Quality Assurance (QA) specialist [05:33]. The speaker emphasizes that a developer is inherently biased and likely to overlook their own mistakes when testing their code [05:53]. A dedicated QA person, however, offers an objective and broader perspective, is specifically trained to perform effective testing, and significantly helps in reducing the number of development iterations required before a feature is ready for production [06:01].
+
+5. Modifying Code in Production
+The fifth and most painful mistake was the instance of modifying the application's code directly in the live production environment [06:40]. This occurred during a live event where users were actively using the application to evaluate projects. When a specific feature began to fail, a developer attempted to fix it by editing the production code in real-time [07:14]. This extremely risky action resulted in a "complete failure"—the application crashed entirely, forcing all users to abandon their computers and switch to traditional pen and paper to continue their evaluations [07:44].</pre>
+    </section>
+
+    <footer>Generado para repositorio — GUIA 7 ÁRBOLES BINARIOS</footer>
+  </div>
+</body>
+</html>
